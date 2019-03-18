@@ -53,7 +53,7 @@ WHERE first_name = "GROUCHO" AND last_name = "WILLIAMS";
 -- 4d
 UPDATE actor
 SET first_name = "GROUCHO"
-WHERE first_name = "HARPO" AND last_name = "WILLIAMS";
+WHERE first_name = "HARPO";
 
 -- 5a
 SHOW CREATE TABLE address;
@@ -70,7 +70,7 @@ CREATE TABLE address (address_id smallint(5) unsigned NOT NULL AUTO_INCREMENT,
     KEY idx_fk_city_id (city_id),
     SPATIAL KEY idx_location (location),
     CONSTRAINT fk_address_city FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE RESTRICT ON UPDATE CASCADE
-    ) ENGINE=InnoDB AUTO_INCREMENT=606 DEFAULT CHARSET=utf8;
+    );
 
 -- 6a
 SELECT first_name, last_name, address
@@ -159,6 +159,8 @@ FROM film
 	USING (film_id)
     INNER JOIN rental
     USING (inventory_id)
+    INNER JOIN payment
+    USING (rental_id)
 GROUP BY title
 ORDER BY count(rental_id) DESC;
 
@@ -211,4 +213,19 @@ ORDER BY sum(amount) DESC
 LIMIT 5;
 
 -- 8b
-    
+CREATE VIEW top_five_genres AS (
+SELECT name, sum(amount) as "Total Revenue"
+FROM category
+	INNER JOIN film_category
+    USING (category_id)
+    INNER JOIN inventory
+    USING (film_id)
+    INNER JOIN rental
+    USING (inventory_id)
+    INNER JOIN payment
+    USING(rental_id)
+GROUP BY name
+ORDER BY sum(amount) DESC
+LIMIT 5); 
+
+DROP VIEW top_five_genres;
