@@ -79,10 +79,12 @@ JOIN address
 USING (address_id);
 
 -- 6b
-SELECT first_name, last_name, sum(amount)
+SELECT first_name, last_name, sum(amount) as "Total Charged"
 FROM staff
-JOIN payment
-USING (staff_id);
+INNER JOIN payment
+USING (staff_id)
+WHERE payment_date LIKE "2005-08%"
+GROUP BY staff_id;
 
 -- 6c
 SELECT title, count(actor_id)
@@ -153,16 +155,14 @@ WHERE film_id IN (
         );
 
 -- 7e
-SELECT title, count(rental_id) as "Total Rentals"
+SELECT title, count(inventory_id) as "Total Rentals"
 FROM film
 	INNER JOIN inventory
 	USING (film_id)
     INNER JOIN rental
     USING (inventory_id)
-    INNER JOIN payment
-    USING (rental_id)
 GROUP BY title
-ORDER BY count(rental_id) DESC;
+ORDER BY count(inventory_id) DESC;
 
 -- 7f	
 SELECT store_id, sum(amount) as "Total Store Sales"
